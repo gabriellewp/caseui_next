@@ -1,3 +1,5 @@
+# Proxy (Java)
+
 ## requirements
 - java8, mvn
 
@@ -14,4 +16,16 @@
 ## run (dev mode)
 - run main method in `App.java` with parameters `[search_engine] [bing_search_key] [bing_suggest_key]`
 
+# Proxy (Python)
 
+## Install
+
+```shell
+python -m venv venv
+source venv/bin/activate
+pip install -U pip
+
+pip install -r requirements.txt
+
+python proxy.py
+```
