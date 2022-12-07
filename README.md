@@ -1,4 +1,7 @@
-## This repo contains the code for the UI used in the following paper:
+# CaSE UI: Next Steps
+
+This repo contains the code for the UI used in the following paper:
+
 >>@inproceedings{ren2021wizard,\
 >>title={Wizard of Search Engine: Access to Information Through Conversations with Search Engines},\
 >>author={Ren, Pengjie and Liu, Zhongkun and Song, Xiaomeng and Tian, Hongtao and Chen, Zhumin and Ren, Zhaochun and de Rijke, Maarten},\
@@ -9,72 +12,115 @@
 ![UI-1](./UI-1.png)
 ![UI-2](./UI-2.png)
 
-## frontend
-+ requirements: node.js, npm
-+ run: 
-  - cd front-end directory
-  - install: `npm install`
-  - run dev mode: `npm run dev`
-  - run build mode: `npm run build`
+## Requirements
 
-## backend
-+ requirements: java8, mysql5.7, maven
-+ run (dev mode, use compiled frontend):
-   1. build front-end, then copy `chat-labelling-frontend/dist` to `chat-labelling-backend/src/main/resources/static`
-   2. start your mysql server
-   3. run `chat-labelling-backend/src/main/java/com/sdu/irlab/chatlabelling/ChatLabellingApplication.main` with arguments:
-         `--dbHost=${your_mysqlhost} --dbPort=${your_mysqlport} --dbUser=${your_mysqluser} --dbPass=${your_mysqlpass} --actionFile=${absolutePath_to_actionFile}  --backgroundFile=${absolutePath_to_backgroundFile} --serverPort=${server_port} --instructionFile=${instruction_file}`
-   4. the server will auto create the database (if not exists) and run on the server your've configured
+For the front end:
+- Node.js
+- NPM
 
-+ run (dev mode, dev mode frontend):
-   1. configure your backend host and port in the proxy table of `chat-labelling-frontend/config/index.js`
-   2. start mysql server and run main method follow step 2 and 3 in **run (dev mode, use compiled frontend)**
+For the back end:
+- Java 8
+- Maven
 
-+ run in production mode:
-   1. build and copy the front end as step 1 in **run (dev mode, use compiled frontend)**
-   2. `cd chat-labelling-backend`
-   3. compile the project, `mvn clean package -Dmaven.test.skip=true`, the argument `-Dmaven.test.skip=true` will skip all tests when compiling
-   4. compiled *.war will is `chat-labelling-backend/target/chat-labelling-0.0.1-SNAPSHOT.war`
-   5. start your mysql server
-   6. `java -jar path_to_war_file.war --dbHost=${your_mysqlhost} --dbPort=${your_mysqlport} --dbUser=${your_mysqluser} --dbPass=${your_mysqlpass} --actionFile=${absolutePath_to_actionFile}  --backgroundFile=${absolutePath_to_backgroundFile} --serverPort=${server_port} --instructionFile=${instruction_file} --searchResultConigFile=${search_result_conig_file}`
+The database is MySQL 5.7.
+
+For the proxy server:
+- Python 3
+
+## Usage
+
+### Step 1. Database
+
+Start the MySQL server. Note for later:
+- root username
+- root password
+- port on which the db server is available
+
+Here is one possible way, if you have Docker:
+
+```shell
+mkdir db
+
+docker run --name chat-labelling-mysql -v $PWD/db:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql
+```
+
+### Step 2. Front end
+
+Start the front end application.
+
+**Option 1: Development Mode**
+
+```shell
+cd chat-labelling-frontend
+
+npm install
+npm run dev
+```
+
+**Option 2: Production Mode**
+
+```shell
+cd chat-labelling-frontend
+
+npm install
+npm run build
+
+cp -r ./dist ../chat-labelling-backend/src/main/resources/static
+```
+
+### Step 3. Proxy server
+
+If you want to want to log in as the 'sys' user, start the proxy server.
+
+```shell
+cd chat-labelling-proxy-server
+
+source venv/bin/activate
+python proxy.py
+```
+
+### Step 4. Back end
+
+Start the back end application.
+
+**Option 1: Development Mode**
+
+```shell
+cd chat-labelling-backend
+
+source .env
+mvn spring-boot:run
+```
+
+**Option 2: Production Mode**
+
+```shell
+cd chat-labelling-backend
+
+mvn clean package -Dmaven.test.skip=true
+
+java -jar target/chat-labelling-0.0.1-SNAPSHOT.war \
+   --dbHost=localhost \
+   --dbPort=3306 \
+   --dbUser=root \
+   --dbPass=my-secret-pw \
+   --actionFile=$PWD/../resources/action.json \
+   --backgroundFile=$PWD/../resources/background.json \
+   --instructionFile=$PWD/../resources/instructions.html \
+   --searchResultConfigFile=$PWD/../resources/searchResultConfig.json \
+   --serverPort=9090
+```
    
-## demo resource files
-+ demo action file and background file are in `/resources`
-+ you can change the actions and backgrounds as you like
-+ you can **not** modify the json keys or json structure of the file.
+#### Regarding demo resource files
+
++ Demo action file and background file are in `/resources`
++ You can change the actions and backgrounds as you like
++ You can **not** modify the json keys or json structure of the file.
 + `instruction.html` is the instruction file shown on the user interface, you can change it as you like.
 + `searchResultConfig.json` is for configure which results are available for which actions.
 
-## modify system status
-+ background index and labelling turn can be modified, and will be available when a new conversation is needed.
-+ wait seconds is the waiting duration when one of the conversation partner is offline. it can be modified and will be available immediately. (users already waiting for partner will not be affected)
-+ delete all system status, and restart the system, the all values will be set to default
+#### Modify system status
 
- ## proxy application
- + if you will log in the system as a 'sys' user, please first start the proxy application, in order to get search results from the search engine automatically
-
-
- ## user guide
- + please follow `USER_GUIDE.MD` 
-
-
-# New instructions
-
-###chat app:
-
-
---dbHost=localhost
---dbPort=3306
---dbUser=root
---dbPass=mysqlpass
---actionFile=/Users/lilykos/projects/CaSE_UI/resources/action.json
---backgroundFile=/Users/lilykos/projects/CaSE_UI/resources/background.json
---instructionFile=/Users/lilykos/projects/CaSE_UI/resources/instructions.html
---searchResultConfigFile=/Users/lilykos/projects/CaSE_UI/resources/searchResultConfig.json
---serverPort=9090
-
-
-### new proxy server is proxy.py in chat-labelling-proxy-server
-
-### run the frontend using `npm run dev`
-
++ Background index and labelling turn can be modified, and will be available when a new conversation is needed.
++ Wait seconds is the waiting duration when one of the conversation partner is offline. it can be modified and will be available immediately. (users already waiting for partner will not be affected)
++ Delete all system status, and restart the system, the all values will be set to default
