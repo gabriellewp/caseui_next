@@ -10,7 +10,7 @@ import com.sdu.irlab.chatlabelling.datasource.repository.OperationLogDAO;
 import com.sdu.irlab.chatlabelling.datasource.repository.UserDAO;
 import com.sdu.irlab.chatlabelling.service.ChatService;
 import com.sdu.irlab.chatlabelling.utils.ChatLabellingUtils;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+// import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
