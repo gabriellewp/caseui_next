@@ -24,32 +24,50 @@ RAINFOREST_URL = 'https://api.rainforestapi.com/request?api_key=DB04626EED0E436C
                  'type=search&amazon_domain=amazon.com&search_term={query}&refinements={filters}'
 
 
-@app.post("/save")
-async def save(name, password, role):
+@app.post("/login")
+async def login(name, password, role, action):
     connection = pymysql.connect(
         host='localhost',
+        port=3306,
         user='root',
-        password='mysqlpass',
+        password='my-secret-pw',
         database='chat_labelling',
         cursorclass=pymysql.cursors.DictCursor
     )
 
     try:
-        with connection:
-            # get the num of users to set new id
-            with connection.cursor() as cursor:
-                cursor.execute("SELECT count(`id`) AS ids FROM `user`")
-                result = cursor.fetchone()
-                new_id = result['ids'] + 1
+        if action == "signup":
+            with connection:
+                # get the num of users to set new id
+                with connection.cursor() as cursor:
+                    cursor.execute("SELECT count(`id`) AS ids FROM `user`")
+                    result = cursor.fetchone()
+                    new_id = result['ids'] + 1
 
-            # create user
-            with connection.cursor() as cursor:
-                sql = "INSERT INTO `user` (`id`, `connection_count`, `name`, `password`, `role`) " \
-                      "VALUES (%s, %s, %s, %s, %s)"
-                cursor.execute(sql, (new_id, 0, name, password, role))
-            connection.commit()
+                # create user
+                with connection.cursor() as cursor:
+                    sql = "INSERT INTO `user` (`id`, `connection_count`, `name`, `password`, `role`) " \
+                          "VALUES (%s, %s, %s, %s, %s)"
+                    cursor.execute(sql, (new_id, 0, name, password, role))
+                connection.commit()
 
             return {'result': 'Success'}
+        elif action == "login":
+            with connection:
+                with connection.cursor() as cursor:
+                    # I guess... check if user exists? this is not real authentication
+                    sql = "SELECT `password`, `role` FROM `user` WHERE `name`=%s"
+                    cursor.execute(sql, (name,))
+                    result = cursor.fetchone()
+
+                    # if user exists, check if password and role match the form data
+                    if result and result["password"] == password and result["role"] == role:
+                        return {"result": "Success"}
+                    else:
+                        return JSONResponse(status_code=401, content={"message": "Authorization failed"})
+        else:
+            return JSONResponse(status_code=400, content={"message": "Action not permitted; only login and signup are supported"})
+
     except:
         return JSONResponse(status_code=500, content={"message": "Something critical happened"})
 

@@ -29,8 +29,8 @@
             <label for="sys">System/Admin</label>
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="handleSubmit('form')">Login</Button>
-            <!-- <Button @click="createNew">Create a new account</Button> -->
+            <Button type="primary" @click="handleSubmit('form', 'login')">Log In</Button>
+            <Button @click="handleSubmit('form', 'signup')">Sign Up</Button>
           </FormItem>
         </Form>
       </Card>
@@ -65,17 +65,17 @@ export default {
     createNew () {
       window.location = '/profile'
     },
-    handleSubmit (name) {
+    handleSubmit (name, action) {
       this.$refs[name].validate((valid) => {
         if (valid) {
-          let usrURL = 'http://localhost:9191/save?name=' + this.formInline.user + '&password=' + this.formInline.password + '&role=' + this.formInline.role
+          let usrURL = 'http://localhost:9191/login?name=' + this.formInline.user + '&password=' + this.formInline.password + '&role=' + this.formInline.role + '&action=' + action
           axios.post(
             usrURL
           ).then((json) => {
             debugger
             this.$Notice.success({
               title: 'Success!',
-              desc: 'User created.'
+              desc: action === 'login' ? 'User logged in.' : 'User created.'
             })
             this.submitting = true
             this.$http.post('/checkLogin',
