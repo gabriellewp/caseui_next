@@ -225,7 +225,7 @@ export default {
           this.loading = false
         }
         if (data.messageCommand === 'WAIT4PARTNER' && !this.finished) {
-          this.message = 'Finding for your partner'
+          this.message = 'Matching you with a chat partner'
           this.partner = ''
           this.role = ''
           this.loading = true
