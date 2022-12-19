@@ -44,6 +44,20 @@ mkdir db
 docker run --name chat-labelling-mysql -v $PWD/db:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -p 3306:3306 -d mysql
 ```
 
+If you'd like to connect to the MySQL monitor and explore the databse contents:
+
+```shell
+docker exec -ti chat-labelling-mysql mysql -u root -p
+```
+
+Enter the password for the root db user. Then inside MySQL shell:
+
+```sql
+use chat_labelling;
+show tables;
+select name,password,role from user;
+```
+
 ### Step 2. Front end
 
 Start the front end application.
