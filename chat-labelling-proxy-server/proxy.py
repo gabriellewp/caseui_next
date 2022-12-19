@@ -1,3 +1,4 @@
+import os
 import requests
 import pymysql
 import uvicorn
@@ -20,17 +21,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-RAINFOREST_URL = 'https://api.rainforestapi.com/request?api_key=DB04626EED0E436C80223796F57DE85F&' \
+RAINFOREST_URL = f'https://api.rainforestapi.com/request?api_key={os.getenv("RAINFOREST_API_KEY")}&' \
                  'type=search&amazon_domain=amazon.com&search_term={query}&refinements={filters}'
 
 
 @app.post("/login")
 async def login(name, password, role, action):
     connection = pymysql.connect(
-        host='localhost',
-        port=3306,
-        user='root',
-        password='my-secret-pw',
+        host=os.getenv("DB_HOST"),
+        port=int(os.getenv("DB_PORT")),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
         database='chat_labelling',
         cursorclass=pymysql.cursors.DictCursor
     )

@@ -76,6 +76,7 @@ If you want to want to log in as the 'sys' user, start the proxy server.
 cd chat-labelling-proxy-server
 
 source venv/bin/activate
+source .env
 python proxy.py
 ```
 
