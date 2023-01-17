@@ -105,7 +105,7 @@ export default {
           checkedData.push(val)
         }
       }
-      debugger
+      // debugger
       console.log(checkedData)
       this.$emit('on-filters-change', checkedData)
     },

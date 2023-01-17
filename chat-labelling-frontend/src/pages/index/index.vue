@@ -379,13 +379,13 @@ export default {
       if (this.statesBackupList.length === 0 || newFilters.length === 0) {
         return
       }
-      debugger
+      // debugger
       let that = this
       let url = 'http://localhost:9191?query=' + encodeURIComponent(this.statesBackupList.join(' ')) + '&refinements=' + encodeURIComponent(newFilters.join(','))
       axios.get(
         url
       ).then((json) => {
-        debugger
+        // debugger
         this.$http.post('/api/saveSearchResults', {
           query: this.statesBackupList.join(' '),
           conversationId: this.conversationId,

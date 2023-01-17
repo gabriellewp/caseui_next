@@ -72,7 +72,7 @@ export default {
           axios.post(
             usrURL
           ).then((json) => {
-            debugger
+            // debugger
             this.$Notice.success({
               title: 'Success!',
               desc: action === 'login' ? 'User logged in.' : 'User created.'
@@ -99,7 +99,7 @@ export default {
               this.$Message.error('Something wrong when sending data!')
             })
           }).catch((error) => {
-            debugger
+            // debugger
             console.log(error)
             this.$Message.error('Something wrong when sending data!')
           })
