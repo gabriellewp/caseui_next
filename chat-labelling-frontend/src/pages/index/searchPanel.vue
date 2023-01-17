@@ -69,7 +69,7 @@
 </template>
 <script>
 
-const arrayEaquals = (arr1, arr2) => {
+const arrayEquals = (arr1, arr2) => {
   // 比较两个数组，内容相同，顺序也相同，返回true，内容相同顺序不同返回‘orderChange’
   if (arr1.length !== arr2.length) return false
   if (JSON.stringify(arr1) === JSON.stringify(arr2)) return true
@@ -94,7 +94,7 @@ export default {
   },
   watch: {
     value (newVal, oldVal) {
-      let equals = arrayEaquals(newVal.map(v => v.itemId), oldVal.map(v => v.itemId))
+      let equals = arrayEquals(newVal.map(v => v.itemId), oldVal.map(v => v.itemId))
       if (equals === true) return
       this.selected = newVal.map(v => v.itemId)
       // value改动，说明model的值改动,就可以触发事件
